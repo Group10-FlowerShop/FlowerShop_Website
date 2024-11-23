@@ -1,15 +1,23 @@
+﻿using Microsoft.EntityFrameworkCore;
+//using YourProjectNamespace.Data;
+using static FlowerShop_Website.Models.DBContext;
+using FlowerShop_Website.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Thêm DbContext
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Thêm các dịch vụ MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Cấu hình middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

@@ -1,0 +1,112 @@
+﻿@model FlowerListViewModel
+@using FlowerShop_Website.Models
+
+<style>
+    .custom-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .custom-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        margin: 0 5px;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        color: #007bff;
+        transition: background-color 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .pagination a.active {
+        background-color: #007bff;
+        color: white;
+        pointer-events: none;
+    }
+</style>
+
+<h2>Danh sách hoa</h2>
+<div class="mb-4">
+    <label for="sortOrder" class="form-label">Sắp xếp theo giá:</label>
+    <select id="sortOrder" class="form-select" onchange="sortFlowers()">
+<option value="">
+</option>
+        <option value="mac_dinh">
+<text>@(Model.SortOrder == "mac_dinh" ? "" : "")</text>Mặc định
+</option>
+      <option value="price_asc">
+    <text>@(Model.SortOrder == "price_asc" ? "" : "")</text>Giá tăng dần
+</option>
+<option value="price_desc">
+    <text>@(Model.SortOrder == "price_desc" ? "" : "")</text>Giá giảm dần
+</option>
+
+    </select>
+</div>
+
+
+
+<div class="row">
+    @foreach (var product in Model.Flowers)
+    {
+        <div class="col-md-4">
+            <div class="card custom-card">
+                <img src="@Url.Content(product.MainImageUrl)" class="card-img-top" alt="@product.name">
+                <div class="card-body">
+                    <h5 class="card-title">@product.name</h5>
+                    <p class="card-text">Giá: @product.price VND</p>
+                    <p class="card-text">@product.description</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/Product/Details/@product.flower_id" class="btn btn-primary btn-block">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Phân trang -->
+<div class="pagination">
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        <a class="@(i == Model.CurrentPage ? "active" : "")" href="@Url.Action("Index", new { page = i })">@i</a>
+    }
+</div>
+
+<script>
+    function sortFlowers() {
+        const sortOrder = document.getElementById('sortOrder').value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('sortOrder', sortOrder);
+        url.searchParams.set('page', 1); // Reset về trang đầu tiên
+        window.location.href = url.toString();
+    }
+</script>
+
