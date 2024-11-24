@@ -69,5 +69,60 @@ namespace FlowerShop_Website.Controllers
             return View(model);
         }
 
+        [Route("Flower/Detail/{flowerId}")]
+        public async Task<ActionResult> Detail(string flowerId)
+        {
+            // Lấy thông tin chi tiết của hoa
+            var flower = await _context.Flowers
+                .Include(f => f.FlowerImages) // Bao gồm các hình ảnh
+                .Where(f => f.flower_id == flowerId)
+                .FirstOrDefaultAsync();
+
+            if (flower == null)
+            {
+                return NotFound();
+            }
+
+            // Tính toán URL của hình ảnh chính
+            flower.MainImageUrl = flower.FlowerImages
+                .FirstOrDefault(img => img.image_type == "main")?.image_url ?? "/images/default.jpg";
+
+            // Lấy danh mục liên quan
+            var categories = await _context.FlowerCategories
+                .Where(fc => fc.flower_id == flowerId)
+                .Select(fc => fc.Category)
+                .ToListAsync();
+
+            // Lấy các dịp liên quan
+            var occasions = await _context.FlowerOccasions
+                .Where(fo => fo.flower_id == flowerId)
+                .Select(fo => fo.Occasion)
+                .ToListAsync();
+
+            // Lấy các màu sắc liên quan
+            var colors = await _context.FlowerColors
+                .Where(fc => fc.flower_id == flowerId)
+                .Select(fc => fc.Color)
+                .ToListAsync();
+
+            // Lấy các phong cách liên quan
+            var styles = await _context.FlowerStyles
+                .Where(fs => fs.flower_id == flowerId)
+                .Select(fs => fs.Style)
+                .ToListAsync();
+
+            // Tạo ViewModel với đầy đủ thông tin
+            var model = new FlowerDetailViewModel
+            {
+                Flower = flower,
+                Categories = categories,
+                Occasions = occasions,
+                Colors = colors,
+                Styles = styles,
+                Images = flower.FlowerImages.Select(img => $"/images/{img.image_url}").ToList()
+            };
+            return View(model);
+        }
+
     }
 }

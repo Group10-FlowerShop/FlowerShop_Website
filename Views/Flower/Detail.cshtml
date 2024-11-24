@@ -1,0 +1,122 @@
+﻿@model FlowerShop_Website.Models.FlowerDetailViewModel
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="text-center">
+                <img src="/images/@Model.Flower.MainImageUrl" alt="Flower Image" style="width: 100%; height: auto; margin: 5px;" />
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="mb-3">
+                <h3>@Model.Flower.name</h3>
+            </div>
+            <div class="mb-3">
+                <p><strong>Nhà cung cấp:</strong> <a href="https://flowershop.com">@Model.Flower.name</a></p>
+                <p><strong>Mô tả:</strong> @Model.Flower.description</p>
+                <p><strong>Giá:</strong> <b>@Model.Flower.price.ToString("N0") VNĐ</b></p>
+            </div>
+
+            <!-- Hiển thị các Category -->
+            <div class="mb-3">
+                <p>
+                    <strong>Danh mục:</strong>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <span>@category.name</span>
+                    }
+                </p>
+            </div>
+
+            <!-- Hiển thị các Occasion -->
+            <div class="mb-3">
+                <p>
+                    <strong>Dịp:</strong>
+                    @foreach (var occasion in Model.Occasions)
+                    {
+                        <span>@occasion.name</span>
+                    }
+                </p>
+            </div>
+
+            <!-- Hiển thị các Color -->
+            <div class="mb-3">
+                <p>
+                    <strong>Màu sắc:</strong>
+                    @foreach (var color in Model.Colors)
+                    {
+                        <span>@color.name</span>
+                    }
+                </p>
+            </div>
+
+            <!-- Hiển thị các Style -->
+            <div class="mb-3">
+                <p>
+                    <strong>Phong cách:</strong>
+                    @foreach (var style in Model.Styles)
+                    {
+                        <span>@style.name</span>
+                    }
+                </p>
+            </div>
+            <label for="quantity" class="form-label"><strong>Số Lượng:</strong></label>
+            <div class="d-flex align-items-center">
+                <button id="btn-decrease" class="btn btn-secondary">-</button>
+                <span id="value" class="mx-3">1</span>
+                <button id="btn-increase" class="btn btn-secondary">+</button>
+            </div>
+            <div class="mb-4">
+                <h2 id="total-price">@Model.Flower.price.ToString("N0")VNĐ</h2>
+            </div>
+
+            <!-- Các nút Thêm vào Giỏ và Mua Ngay -->
+            <div class="d-flex justify-content-between">
+                <!-- Both buttons with equal size using 'w-100' for full width and similar height -->
+                <a href="giohang.html" class="btn btn-primary w-100 me-2">
+                    <i class="fa-solid fa-cart-plus"></i> Thêm Vào Giỏ Hàng
+                </a>
+                <a href="giohang.html" class="btn btn-success w-100 ms-2">
+                    <i class="fa-solid fa-cart-shopping"></i> Mua Ngay
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Lấy các phần tử cần thiết từ DOM
+    const btnDecrease = document.getElementById("btn-decrease");
+    const btnIncrease = document.getElementById("btn-increase");
+    const valueSpan = document.getElementById("value");
+    const totalPriceElement = document.getElementById("total-price");
+
+    // Đặt giá trị ban đầu
+    let quantity = 1;  // Giá trị mặc định là 1
+    const price = @Model.Flower.price;  // Lấy giá của sản phẩm từ model
+
+    // Hàm tính tổng tiền
+    function updateTotalPrice() {
+        const totalPrice = quantity * price;
+        totalPriceElement.innerText = totalPrice.toLocaleString() + " VNĐ";  // Hiển thị tổng tiền
+    }
+
+    // Sự kiện khi giảm số lượng
+    btnDecrease.addEventListener("click", function () {
+        if (quantity > 1) {
+            quantity--;  // Giảm số lượng
+            valueSpan.innerText = quantity;  // Cập nhật số lượng hiển thị
+            updateTotalPrice();  // Cập nhật tổng tiền
+        }
+    });
+
+    // Sự kiện khi tăng số lượng
+    btnIncrease.addEventListener("click", function () {
+        quantity++;  // Tăng số lượng
+        valueSpan.innerText = quantity;  // Cập nhật số lượng hiển thị
+        updateTotalPrice();  // Cập nhật tổng tiền
+    });
+
+    // Khởi tạo tổng tiền ban đầu
+    updateTotalPrice();
+</script>
