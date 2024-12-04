@@ -1,24 +1,29 @@
 using System.Diagnostics;
-using FlowerShop_Website.Models;
+using static FlowerShop_Website.Models.DBContext;
 using Microsoft.AspNetCore.Mvc;
+using FlowerShop_Website.Models;
 
 namespace FlowerShop_Website.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly AppDbContext _dbContext;
+        public HomeController(AppDbContext context)
         {
-            _logger = logger;
+            _dbContext = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var products = _dbContext.Flowers.ToList();
+            return View(products);
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        public IActionResult DangNhap()
         {
             return View();
         }

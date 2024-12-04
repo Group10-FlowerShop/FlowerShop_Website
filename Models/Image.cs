@@ -8,6 +8,5 @@
             public string ImageUrl { get; set; }
             public string ImageType { get; set; }
             public int DisplayOrder { get; set; }
-        
     }
 }
